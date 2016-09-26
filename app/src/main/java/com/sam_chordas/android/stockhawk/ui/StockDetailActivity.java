@@ -18,6 +18,7 @@ import com.db.chart.view.LineChartView;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.rest.Constant;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,7 +36,7 @@ public class StockDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stock_detail);
 
         Intent intent = getIntent();
-        String symbol = intent.getStringExtra("symbol");
+        String symbol = intent.getStringExtra(Constant.IntentConstant.INTENT_KEY_SYMBOL);
 
 
         ActionBar actionBar = getSupportActionBar();
@@ -50,7 +51,7 @@ public class StockDetailActivity extends AppCompatActivity {
         float min = 999999f;
         float max = 0f;
         float totalValue = 0;
-        float avg = 0;
+        float avg;
          mCursor = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                 new String[] { QuoteColumns.CREATED,QuoteColumns.BIDPRICE }, QuoteColumns.SYMBOL + "= ?",
                 new String[] { symbol }, null);

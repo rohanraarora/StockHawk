@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 /**
  * Created by sam_chordas on 10/8/15.
+ *
  */
 public class Utils {
 
@@ -21,11 +22,11 @@ public class Utils {
 
   public static ArrayList quoteJsonToContentVals(String JSON) throws InvalidSymbolException{
     ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
-    JSONObject jsonObject = null;
-    JSONArray resultsArray = null;
+    JSONObject jsonObject;
+    JSONArray resultsArray;
     try{
       jsonObject = new JSONObject(JSON);
-      if (jsonObject != null && jsonObject.length() != 0){
+      if (jsonObject.length() != 0){
         jsonObject = jsonObject.getJSONObject("query");
         int count = Integer.parseInt(jsonObject.getString("count"));
         if (count == 1){

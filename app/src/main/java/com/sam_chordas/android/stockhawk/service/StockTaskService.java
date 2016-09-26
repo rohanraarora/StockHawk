@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.InvalidSymbolException;
@@ -85,7 +86,7 @@ public class StockTaskService extends GcmTaskService{
         initQueryCursor.moveToFirst();
         for (int i = 0; i < initQueryCursor.getCount(); i++){
           mStoredSymbols.append("\""+
-              initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol"))+"\",");
+              initQueryCursor.getString(initQueryCursor.getColumnIndex(QuoteColumns.SYMBOL))+"\",");
           initQueryCursor.moveToNext();
         }
         mStoredSymbols.replace(mStoredSymbols.length() - 1, mStoredSymbols.length(), ")");
@@ -129,14 +130,14 @@ public class StockTaskService extends GcmTaskService{
           mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
               Utils.quoteJsonToContentVals(getResponse));
         }catch (RemoteException | OperationApplicationException e){
-          Log.e(LOG_TAG, "Error applying batch insert", e);
+          Log.e(LOG_TAG, getString(R.string.error_log_batch_insert), e);
         }
         catch (InvalidSymbolException e){
           Handler h = new Handler(Looper.getMainLooper());
           h.post(new Runnable() {
             @Override
             public void run() {
-              Toast.makeText(mContext,"Invalid Symbol",Toast.LENGTH_LONG).show();
+              Toast.makeText(mContext, R.string.alert_message_invalid_symbol,Toast.LENGTH_LONG).show();
             }
           });
 
