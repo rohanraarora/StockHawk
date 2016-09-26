@@ -1,6 +1,5 @@
 package com.sam_chordas.android.stockhawk.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -11,21 +10,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
-
 import com.db.chart.Tools;
 import com.db.chart.model.LineSet;
 import com.db.chart.model.Point;
-import com.db.chart.view.AxisController;
 import com.db.chart.view.ChartView;
 import com.db.chart.view.LineChartView;
-import com.db.chart.view.XController;
-import com.db.chart.view.YController;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -63,6 +55,11 @@ public class StockDetailActivity extends AppCompatActivity {
                 new String[] { QuoteColumns.CREATED,QuoteColumns.BIDPRICE }, QuoteColumns.SYMBOL + "= ?",
                 new String[] { symbol }, null);
         if(mCursor!=null) {
+            int count = mCursor.getCount();
+            if(mCursor.getCount() > 10){
+                mCursor.moveToPosition(mCursor.getCount() - 11);
+                count = 10;
+            }
             while (mCursor.moveToNext()) {
                 long  dateTime = Long.parseLong(mCursor.getString(mCursor.getColumnIndex(QuoteColumns.CREATED)));
                 SimpleDateFormat format = new SimpleDateFormat("HH:mm");
@@ -75,7 +72,7 @@ public class StockDetailActivity extends AppCompatActivity {
 
                 dataset.addPoint(getPoint(dateTimeString,value));
             }
-            avg = totalValue/mCursor.getCount();
+            avg = totalValue/count;
             min -= 2f;
             max += 2f;
             min = Math.max(0,min);

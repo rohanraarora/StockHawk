@@ -4,6 +4,7 @@ import android.content.ContentProviderOperation;
 import android.util.Log;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,7 +19,7 @@ public class Utils {
 
   public static boolean showPercent = true;
 
-  public static ArrayList quoteJsonToContentVals(String JSON){
+  public static ArrayList quoteJsonToContentVals(String JSON) throws InvalidSymbolException{
     ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
     JSONObject jsonObject = null;
     JSONArray resultsArray = null;
@@ -48,35 +49,43 @@ public class Utils {
     return batchOperations;
   }
 
-  public static String truncateBidPrice(String bidPrice){
-    bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
+  public static String truncateBidPrice(String bidPrice) {
+    if (!bidPrice.equals("null")){
+      bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
+    }
     return bidPrice;
   }
 
   public static String truncateChange(String change, boolean isPercentChange){
-    String weight = change.substring(0,1);
-    String ampersand = "";
-    if (isPercentChange){
-      ampersand = change.substring(change.length() - 1, change.length());
-      change = change.substring(0, change.length() - 1);
+    if(!change.equals("null")){
+      String weight = change.substring(0,1);
+      String ampersand = "";
+      if (isPercentChange){
+        ampersand = change.substring(change.length() - 1, change.length());
+        change = change.substring(0, change.length() - 1);
+      }
+      change = change.substring(1, change.length());
+      double round = (double) Math.round(Double.parseDouble(change) * 100) / 100;
+      change = String.format("%.2f", round);
+      StringBuffer changeBuffer = new StringBuffer(change);
+      changeBuffer.insert(0, weight);
+      changeBuffer.append(ampersand);
+      change = changeBuffer.toString();
     }
-    change = change.substring(1, change.length());
-    double round = (double) Math.round(Double.parseDouble(change) * 100) / 100;
-    change = String.format("%.2f", round);
-    StringBuffer changeBuffer = new StringBuffer(change);
-    changeBuffer.insert(0, weight);
-    changeBuffer.append(ampersand);
-    change = changeBuffer.toString();
     return change;
   }
 
-  public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject){
+  public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) throws InvalidSymbolException{
     ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
         QuoteProvider.Quotes.CONTENT_URI);
     try {
       String change = jsonObject.getString("Change");
+      String bidPrice = jsonObject.getString("Bid");
+      if(bidPrice == null || bidPrice.equals("null")){
+        throw new InvalidSymbolException();
+      }
       builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
-      builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
+      builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(bidPrice));
       builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
           jsonObject.getString("ChangeinPercent"), true));
       builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
