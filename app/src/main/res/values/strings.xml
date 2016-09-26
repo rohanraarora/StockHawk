@@ -7,8 +7,8 @@
     <string name="input_hint" translatable="false">FB</string>
     <string name="input_prefill" translatable="false"></string>
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
-    <string name="content_desc_add_stock_button" translatable="false">Add New Stock</string>
+    <string name="content_desc_add_stock_button">Add New Stock</string>
     <string name="alert_message_already_saved_stock">This stock is already saved!</string>
-    <string name="error_log_batch_insert">Error applying batch insert</string>
+    <string name="error_log_batch_insert" translatable="false">Error applying batch insert</string>
     <string name="alert_message_invalid_symbol">Invalid Symbol</string>
 </resources>
