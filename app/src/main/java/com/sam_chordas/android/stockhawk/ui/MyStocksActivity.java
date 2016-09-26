@@ -76,7 +76,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         networkToast();
       }
     }
-    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+    final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
@@ -85,7 +85,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             new RecyclerViewItemClickListener.OnItemClickListener() {
               @Override public void onItemClick(View v, int position) {
                 //TODO:
-                // do something on item click
+                if(mCursor.moveToPosition(position)){
+                  Intent detailIntent = new Intent(mContext,StockDetailActivity.class);
+                  String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
+                  detailIntent.putExtra("symbol",symbol);
+                  mContext.startActivity(detailIntent);
+                }
               }
             }));
     recyclerView.setAdapter(mCursorAdapter);
