@@ -24,6 +24,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
+import com.sam_chordas.android.stockhawk.rest.Constant;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -46,8 +47,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
    */
   private CharSequence mTitle;
   private Intent mServiceIntent;
-  private ItemTouchHelper mItemTouchHelper;
-  private static final int CURSOR_LOADER_ID = 0;
+    private static final int CURSOR_LOADER_ID = 0;
   private QuoteCursorAdapter mCursorAdapter;
   private Context mContext;
   private Cursor mCursor;
@@ -69,7 +69,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     mServiceIntent = new Intent(this, StockIntentService.class);
     if (savedInstanceState == null){
       // Run the initialize task service so that some stocks appear upon an empty database
-      mServiceIntent.putExtra("tag", "init");
+      mServiceIntent.putExtra(Constant.IntentConstant.INTENT_KEY_TAG, "init");
       if (isConnected){
         startService(mServiceIntent);
       } else{
@@ -84,11 +84,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
             new RecyclerViewItemClickListener.OnItemClickListener() {
               @Override public void onItemClick(View v, int position) {
-                //TODO:
                 if(mCursor.moveToPosition(position)){
                   Intent detailIntent = new Intent(mContext,StockDetailActivity.class);
-                  String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
-                  detailIntent.putExtra("symbol",symbol);
+                  String symbol = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL));
+                  detailIntent.putExtra(Constant.IntentConstant.INTENT_KEY_SYMBOL,symbol);
                   mContext.startActivity(detailIntent);
                 }
               }
@@ -113,15 +112,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                       new String[] { input.toString() }, null);
                   if (c.getCount() != 0) {
                     Toast toast =
-                        Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
+                        Toast.makeText(MyStocksActivity.this, R.string.alert_message_already_saved_stock,
                             Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                     toast.show();
-                    return;
                   } else {
                     // Add the stock to DB
-                    mServiceIntent.putExtra("tag", "add");
-                    mServiceIntent.putExtra("symbol", input.toString());
+                    mServiceIntent.putExtra(Constant.IntentConstant.INTENT_KEY_TAG, "add");
+                    mServiceIntent.putExtra(Constant.IntentConstant.INTENT_KEY_SYMBOL, input.toString());
                     startService(mServiceIntent);
                   }
                 }
@@ -135,7 +133,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     });
 
     ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
-    mItemTouchHelper = new ItemTouchHelper(callback);
+      ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(callback);
     mItemTouchHelper.attachToRecyclerView(recyclerView);
 
     mTitle = getTitle();
