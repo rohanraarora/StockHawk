@@ -12,6 +12,16 @@
       android:layout_height="match_parent"
       />
 
+  <TextView
+      android:id="@+id/main_empty_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:padding="16dp"
+      android:textColor="#fff"
+      android:visibility="gone"
+      android:text="@string/empty_string"/>
+
   <com.melnykov.fab.FloatingActionButton
       android:id="@+id/fab"
       android:layout_width="wrap_content"

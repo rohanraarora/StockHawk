@@ -11,4 +11,8 @@
     <string name="alert_message_already_saved_stock">This stock is already saved!</string>
     <string name="error_log_batch_insert" translatable="false">Error applying batch insert</string>
     <string name="alert_message_invalid_symbol">Invalid Symbol</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty_string">No Stocks. Please add a new stock.</string>
 </resources>
